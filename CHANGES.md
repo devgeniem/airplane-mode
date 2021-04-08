@@ -1,3 +1,6 @@
+#### Version 0.3.3 - 2021/04/08
+* Added Latvian language.
+
 #### Version 0.3.3 - 2019/09/01
 * Fix the `__return_false` callback for the `themes_api` hook.
 * Fix `Error Cannot redeclare core_blocker_get_languages()` that occurs when used together with other plugins that request the languages multiple times.
