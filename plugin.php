@@ -121,9 +121,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
             // Run various hooks if the plugin should be enabled
             if ( self::enabled() ) {
 
-                // Disable WordPress from fetching available languages
-                add_filter( 'pre_site_transient_available_translations', array( __CLASS__, 'available_translations' ) );
-
                 // Prevent BuddyPress from falling back to Gravatar avatars.
                 add_filter( 'bp_core_fetch_avatar_no_grav',         '__return_true' );
 
@@ -489,45 +486,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
                 'version_checked'   => $wp_version,
                 'checked'           => $data,
             );
-        }
-
-        /**
-         * Returns installed languages instead of all possibly available languages
-         */
-        static public function available_translations() {
-
-            // include long predefined list of all available languages
-            // It includes a function: core_blocker_get_languages()
-            include_once( __DIR__ . '/lib/language-list.php' );
-            $core_languges = core_blocker_get_languages();
-            $installed = get_available_languages();
-
-            // Call the global WP version.
-            global $wp_version;
-
-            // shared settings
-            $date = date_i18n( 'Y-m-d H:is' , time() ); // eg. 2016-06-26 10:08:23
-
-            $available = array();
-
-            foreach ($installed as $lang) {
-
-                // Try to mimick the data that wordpress puts into 'available_translations' transient
-                $settings = array(
-                    'language' => $lang,
-                    'iso' => array( $lang ),
-                    'version' => $wp_version,
-                    'updated' => $date,
-                    'strings' => array(
-                        'continue' => __('Continue'),
-                    ),
-                    'package' => "https://downloads.wordpress.org/translation/core/{$wp_version}/{$lang}.zip"
-                );
-
-                $available[$lang] = array_merge( $settings, $core_languges[$lang] );
-            }
-
-            return $available;
         }
 
         /**
